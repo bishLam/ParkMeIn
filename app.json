@@ -27,7 +27,7 @@
       "package": "com.bishlamichhane.parkmein"
     },
     "web": {
-      "favicon": "./assets/images/favicon.png",
+      "favicon": "./assets/images/parkme-app-icon.png",
       "bundler": "metro"
     },
     "plugins": [
