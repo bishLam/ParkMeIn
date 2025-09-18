@@ -2,14 +2,14 @@ import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React, { Component } from 'react'
 
-export class AuthLayout extends Component {
+export class MainLayout extends Component {
   render() {
     return (
      <>
       <Stack>
-        <Stack.Screen name="forgotPassword" options={{ headerShown: false }} />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="login" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
       </Stack>
       <StatusBar style="auto" />
       </>
@@ -17,5 +17,5 @@ export class AuthLayout extends Component {
   }
 }
 
-export default AuthLayout
+export default MainLayout
 

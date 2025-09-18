@@ -12,4 +12,4 @@ export const Colours = {
   warning: "#ff8f00",
   info: "#0277bd",
   success: "#558b2f",
-} as const;
+};
