@@ -5,10 +5,11 @@
     "scheme": "parkmein",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "/assets/images/parkmein-icon.png",
+    "icon": "./assets/images/parkme-app-icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "googleServicesFile": "./Firebase/ServiceFiles/GoogleService-Info.plist",
       "supportsTablet": true,
       "bundleIdentifier": "com.bishlamichhane.parkmein",
       "infoPlist": {
@@ -16,6 +17,7 @@
       }
     },
     "android": {
+      "googleServicesFile": "./Firebase/ServiceFiles/google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -31,6 +33,17 @@
       "bundler": "metro"
     },
     "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/crashlytics",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",
@@ -53,7 +66,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "e091562d-208b-41df-af12-61e0d55cc775"
+        "projectId": "8a84de4b-ed8f-49a6-9250-0b0a39a5fbe7"
       }
     }
   }
