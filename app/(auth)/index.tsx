@@ -1,57 +1,95 @@
 import { CustomTextInput } from '@/components/CustomTextInput';
+import { isValidEmail, isValidPassword } from '@/utils/helper';
 import auth from '@react-native-firebase/auth';
+import { router } from 'expo-router';
 import { FirebaseError } from 'firebase/app';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Keyboard, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// for firebase authentication
+export default function Login() {
+    // State Variables
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+    // Validate Email and Password
+    const validEmail = isValidEmail(email);
+    const validPassword = isValidPassword(password);
 
-const LandingPage = ()  => {
-    const [email, setEmail] = useState('');  
-    const [password, setPassword] = useState('');  
+    const isFormValid = validEmail && validPassword;
 
-    // this is the signup page for now. WE will add the login functionality later
-  const handleSignup = async () => {
-    // Add signup logic here
-    try{
-      await auth().createUserWithEmailAndPassword(email, password);
-      alert("User account created Please check your email for verification");
-      
+    const handleFirebaseLogin = async (email: string, password: string) => {
+        try {
+            await auth().signInWithEmailAndPassword(email, password)
+        }
+        catch (error: any) {
+            const err  = error as FirebaseError;
+            alert("Error logging in: " + err.message);
+            console.log("Error logging in: ", err);
+            return;
+        }
     }
-    catch(error: any){
-      const err = error as FirebaseError;
-      alert("Error signing up: " + err.message)
-    }
 
-  }
 
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#3e9a74' }}>
-        
-        <View style = {styles.screen}>
-        <View style={styles.mainContainer}>
-          <ScrollView bounces alwaysBounceVertical overScrollMode='always' showsVerticalScrollIndicator={false}>
-            <Text style={styles.title}>Let's Sign you in</Text>
-            <Text style={styles.subtitle} >Your Journey is finally here</Text>
-            <View>
-              <CustomTextInput label="Email" value= {email} onChangeText={(text) => setEmail(text)} placeholder="Enter your email" secureTextEntry={false} />
-              <CustomTextInput label="Password" value= {password} onChangeText={(text) => setPassword(text)} placeholder="Enter your password" secureTextEntry={true} />
+    const handleLogin = async () => {
+        Keyboard.dismiss(); // Hide the keyboard
+
+        console.log("Attempting to log in with email:", email);
+        if (!isFormValid) {
+            console.log("Form is not valid");
+            alert('Incomplete Form: Please enter your email and password.');
+            return;
+        }
+
+        await handleFirebaseLogin(email, password);
+    };
+
+    const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+    };
+
+     return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#3e9a74' }}>
+            <View style={styles.screen}>
+                <View style={styles.mainContainer}>
+                    <ScrollView bounces alwaysBounceVertical overScrollMode='always' showsVerticalScrollIndicator={false}>
+                        <Text style={styles.title}>Let's Sign you in</Text>
+                        <Text style={styles.subtitle} >Your Journey is finally here</Text>
+                        <View>
+
+                            <CustomTextInput
+                                label="Email"
+                                value={email}
+                                onChangeText={(text) => setEmail(text)}
+                                placeholder="Enter your email"
+                                secureTextEntry={false}
+                            />
+                            {/* I added props for the password input and visibility toggle */}
+                            <CustomTextInput
+                                label="Password"
+                                value={password}
+                                onChangeText={(text) => setPassword(text)}
+                                placeholder="Enter your password"
+                                secureTextEntry={!isPasswordVisible}
+                            />
+                        </View>
+                        {/* I added onPress and disabled props to the button so it should only click when form is valid*/}
+                        <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={!isFormValid}>
+                            <Text>Sign In</Text>
+                        </TouchableOpacity>
+
+                        <Pressable onPress={
+                            () => router.push('/(auth)/signup')
+                        }>
+                            <Text>Sign up instead</Text>
+                        </Pressable>
+                    </ScrollView>
+                </View>
             </View>
-            <TouchableOpacity onPress={handleSignup} style={styles.loginButton}>
-              <Text>Sign In</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-        </View>
-      </SafeAreaView>
-    )
+        </SafeAreaView>
+    );
 }
-
-export default LandingPage
-
-// stylessheets
 
 const styles = StyleSheet.create({
 screen:{

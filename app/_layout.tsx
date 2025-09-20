@@ -1,29 +1,34 @@
 
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
-import { router, Stack, useSegments } from 'expo-router'
-import { StatusBar } from 'expo-status-bar'
-import React, { useEffect, useState } from 'react'
+import { FirebaseAuthTypes, getAuth, onAuthStateChanged } from '@react-native-firebase/auth';
+import { router, Stack, useSegments } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useState } from 'react';
+
 
 const RootLayout = () => {
 
-  const [initialising, setInitialising] = useState(true);
+  const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null> (null);
   const segments = useSegments();
 
-  const OnAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    console.log("Auth state changed: ", user);
+  //when the user state changes, this function set the user and set initializing to false
+  function handleAuthStateChanged(use: FirebaseAuthTypes.User | null) {
     setUser(user);
-    if(initialising) setInitialising(false);
+    if (initializing) setInitializing(false);
   }
 
-  useEffect (() => {
-    const subscriber = auth().onAuthStateChanged(OnAuthStateChanged);
+  // Set an authentication state observer and get user data
+  useEffect(() => {
+    const subscriber = onAuthStateChanged(getAuth(), handleAuthStateChanged);
     return subscriber; // unsubscribe on unmount
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if(initialising) return;
+    if (initializing) return;
     const inAuthGroup = segments[0] === '(auth)';
+    console.log("User:", user);
+    console.log("In Auth Group:", inAuthGroup); 
+
     if(user && inAuthGroup) {
       // If the user is signed in and the initial segment is anything in the auth group, redirect to (tabs)
       console.log("User is signed in, redirecting to (tabs)");
@@ -38,13 +43,12 @@ const RootLayout = () => {
       router.replace('/(auth)');
     }
 
-  }, [user, initialising])
+  }, [user, initializing])
   return (
      <>
       <Stack>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
       </Stack>
       <StatusBar style="auto" />
       </>
