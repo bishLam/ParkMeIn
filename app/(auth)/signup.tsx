@@ -1,93 +1,85 @@
-import { CustomTextInput } from '@/components/CustomTextInput';
-import auth from '@react-native-firebase/auth';
-import { FirebaseError } from 'firebase/app';
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from 'react'
+import { useContext, useEffect, useState } from "react";
+import { isValidEmail, isValidPassword } from "@/utils/helper";
+import { Alert, Button, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { router } from 'expo-router';
 
-// for firebase authentication
+export default function SignUp() {
+  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [acceptedTCs, setAcceptedTCs] = useState(false);
+  const [auth, setAuth] = useState(null);
 
+  const validEmail = isValidEmail(email);
+  const validPassword = isValidPassword(password);
 
-const SignIn = ()  => {
-    const [email, setEmail] = useState('');  
-    const [password, setPassword] = useState('');  
+  // Use with disabled={!isFormValid} so the button is only clickable when the form is valid
+  const isFormValid = validEmail && validPassword && fullName.length > 0 && acceptedTCs;
 
-    // this is the signup page for now. WE will add the login functionality later
+  useEffect(() => {
+    if (auth) {
+      // router.navigate("/(tabs)"); 
+    }
+  }, [auth]);
+
+  const handleFirebaseSignup = async (email: string, password: string) => {
+    // Placeholder for Firebase signup logic
+  };
+
   const handleSignup = async () => {
-    // Add signup logic here
-    try{
-      await auth().signInWithEmailAndPassword(email, password);
-      alert("User account created Please check your email for verification");
-      
+    Keyboard.dismiss(); // Hide the keyboard
+
+    const errors = [];
+
+    if (!fullName) {
+      errors.push('Full Name is required.');
     }
-    catch(error: any){
-      const err = error as FirebaseError;
-      alert("Error signing up: " + err.message)
+    if (!validEmail) {
+      errors.push('Please enter a valid email address.');
+    }
+    if (!validPassword) {
+      errors.push('Password must be at least 8 characters long.');
+    }
+    if (!acceptedTCs) {
+      errors.push('Please accept the Terms and Conditions.');
     }
 
-  }
+    if (errors.length > 0) {
+      Alert.alert('Form Error', errors.join('\n'));
+      return;
+    }
 
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#3e9a74' }}>
-        
-        <View style = {styles.screen}>
-        <View style={styles.mainContainer}>
-          <ScrollView bounces alwaysBounceVertical overScrollMode='always' showsVerticalScrollIndicator={false}>
-            <Text style={styles.title}>Let's Sign you in</Text>
-            <Text style={styles.subtitle} >Your Journey is finally here</Text>
-            <View>
-              <CustomTextInput label="Email" value= {email} onChangeText={(text) => setEmail(text)} placeholder="Enter your email" secureTextEntry={false} />
-              <CustomTextInput label="Password" value= {password} onChangeText={(text) => setPassword(text)} placeholder="Enter your password" secureTextEntry={true} />
-            </View>
-            <TouchableOpacity style={styles.loginButton}>
-              <Text>Sign In</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-        </View>
-      </SafeAreaView>
-    )
+    await handleFirebaseSignup(email, password);
+  };
+
+  // Use this for the password visibility toggle button
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  return (
+    // Placeholder UI 
+    <View>
+      <Text>Sign Up Page</Text>
+      <TextInput placeholder="Full Name" value={fullName} onChangeText={setFullName} />
+      <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
+      <TextInput placeholder="Password" value={password} onChangeText={setPassword} />
+
+      <Pressable onPress={() => setAcceptedTCs(!acceptedTCs)}>
+        <Text>I accept the T&Cs</Text>
+      </Pressable>
+
+      <Button
+        title="Sign Up"
+        onPress={handleSignup}
+        disabled={!isFormValid}
+      />
+    </View>
+  );
+
 }
 
-export default SignIn
+const styles = StyleSheet.create({})
 
-// stylessheets
-
-const styles = StyleSheet.create({
-screen:{
-  flex:1,
-  justifyContent:"flex-end",
-  marginTop:"50%",
-},
-
-  mainContainer:{
-    flex:1,
-    display:"flex",
-    backgroundColor: "#f2f2f2",
-    borderColor:"black",
-    borderWidth:2,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    padding:20,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: "bold",
-    marginBottom: "2%",
-  },
-   subtitle: {
-    fontSize:15,
-    fontWeight: "400",
-    color:"grey",
-    marginBottom: "2%"
-   },
-
-   loginButton:{
-    backgroundColor: "lightgrey",
-    alignItems:"center",
-    justifyContent:"center",
-    padding:15,
-    borderRadius:5,
-    marginTop:"5%",
-   }
-})
