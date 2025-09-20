@@ -9,3 +9,12 @@ npm install firebase
 
 #Step 4
 added the FirebaseConfig.ts file
+
+
+# for the firebase
+
+npx expo install expo-dev-client
+npx expo install @react-native-firebase/app
+<!-- for firebase auth -->
+npx expo install @react-native-firebase/auth 
+
