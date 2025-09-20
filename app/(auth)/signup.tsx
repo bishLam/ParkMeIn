@@ -82,3 +82,4 @@ export default function SignUp() {
 }
 
 const styles = StyleSheet.create({})
+

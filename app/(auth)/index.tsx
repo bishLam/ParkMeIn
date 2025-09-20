@@ -1,11 +1,31 @@
-import { CustomTextInput } from '@/components/CustomTextInput'
-import React, { useState } from 'react'
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { CustomTextInput } from '@/components/CustomTextInput';
+import auth from '@react-native-firebase/auth';
+import { FirebaseError } from 'firebase/app';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+// for firebase authentication
+
 
 const LandingPage = ()  => {
     const [email, setEmail] = useState('');  
     const [password, setPassword] = useState('');  
+
+    // this is the signup page for now. WE will add the login functionality later
+  const handleSignup = async () => {
+    // Add signup logic here
+    try{
+      await auth().createUserWithEmailAndPassword(email, password);
+      alert("User account created Please check your email for verification");
+      
+    }
+    catch(error: any){
+      const err = error as FirebaseError;
+      alert("Error signing up: " + err.message)
+    }
+
+  }
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#3e9a74' }}>
@@ -19,7 +39,7 @@ const LandingPage = ()  => {
               <CustomTextInput label="Email" value= {email} onChangeText={(text) => setEmail(text)} placeholder="Enter your email" secureTextEntry={false} />
               <CustomTextInput label="Password" value= {password} onChangeText={(text) => setPassword(text)} placeholder="Enter your password" secureTextEntry={true} />
             </View>
-            <TouchableOpacity style={styles.loginButton}>
+            <TouchableOpacity onPress={handleSignup} style={styles.loginButton}>
               <Text>Sign In</Text>
             </TouchableOpacity>
           </ScrollView>
