@@ -4,14 +4,6 @@ import { isValidEmail, isValidPassword } from "@/utils/helper";
 import { Alert, Button, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { router } from 'expo-router';
 
-const SignupPage = () => {
-  return (
-    <View>
-      <Text>SignupPage</Text>
-    </View>
-  )
-}
-
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
@@ -61,32 +53,32 @@ export default function SignUp() {
 
     await handleFirebaseSignup(email, password);
   };
-  
+
   // Use this for the password visibility toggle button
-  const togglePasswordVisibility = () => { 
+  const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-    return (
+  return (
     // Placeholder UI 
     <View>
       <Text>Sign Up Page</Text>
       <TextInput placeholder="Full Name" value={fullName} onChangeText={setFullName} />
       <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
       <TextInput placeholder="Password" value={password} onChangeText={setPassword} />
-      
+
       <Pressable onPress={() => setAcceptedTCs(!acceptedTCs)}>
         <Text>I accept the T&Cs</Text>
       </Pressable>
-      
-      <Button 
-        title="Sign Up" 
-        onPress={handleSignup} 
-        disabled={!isFormValid} 
+
+      <Button
+        title="Sign Up"
+        onPress={handleSignup}
+        disabled={!isFormValid}
       />
     </View>
   );
-  
+
 }
 
 const styles = StyleSheet.create({})
